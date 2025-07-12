@@ -2,6 +2,7 @@ from sqlalchemy import create_engine,String,CHAR,Text,Column,Boolean,Integer,Dat
 from sqlalchemy.orm import sessionmaker,relationship
 from sqlalchemy.ext.declarative import declarative_base
 from datetime import datetime
+from sqlalchemy import func
 
 DATABASE_URL = ""
 
@@ -65,6 +66,31 @@ def get_post_by_user(user_id):
     return session.query(Post).filter(Post.author_id == user_id).all()
 
 
-# Update & modifying reocrds 
+# 4. Update & modifying reocrds 
 
 def update_username(user_id,username):
+    user = session.query(User).filter(User.id == user_id).first()
+    if user:
+        user.user_name = username
+        session.commit()
+        return user
+    return None
+
+
+# 5. Deleting recorders
+def delete_user(user_name):
+    user = session.query(User).filter(User.user_name == user_name).first()
+    if user:
+        session.delete(user)
+        session.commit
+    return None
+
+
+def get_user_with_posts():
+    return session.query(User).join(Post).all()
+
+def search_post_by_keywords(keywords):
+    return session.query(Post).filter(Post.title.contains(keywords),Post.content.contains(keywords)).all()
+
+if __name__ == "__main__":
+    pass
